@@ -17,6 +17,7 @@ def normalizar(text):
         Ftext = Ftext + subtext[space]
     return Ftext
 
+Catalog = {"978-1": {}}
 BooksChoice = 0            
 UserChoice = 0
 LoanChoice = 0
