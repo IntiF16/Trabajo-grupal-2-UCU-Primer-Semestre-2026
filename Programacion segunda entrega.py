@@ -19,23 +19,22 @@ def normalizar(text):
             
 
 running = True
-menu = {"estudiantes":1, "libros": 2, "prestamos":3}
-
 print("Bienvenido al gestor de bibliotecas de la UCU")
 while running == True:
     print("¿Que quieres gestionar?")
     choice = input("Estudiantes, Libros, Prestamos o Salir")
     choice = normalizar(choice)
     match menu[choice]:
-        case 1:
-            Print("1: Agregar libro")
-            Print("2: Remover libro")
-            Print("3: Buscar libros")
-        case 2:
+        case "estudiantes":
+            print 
+        case "libros":
             print ("Libros")
-        case 3:
+            print("1: Agregar libro")
+            print("2: Remover libro")
+            print("3: Buscar libros")
+        case "prestamos":
             print ("Prestamos")
-        case 4:
+        case "salir":
             running == False
         case _:
             Print("Ingrese un valor valido")
