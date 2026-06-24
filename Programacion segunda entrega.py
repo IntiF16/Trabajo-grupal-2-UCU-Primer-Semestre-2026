@@ -47,12 +47,13 @@ class ErrorValorNumSo(Exception):
         return repr(self.value)
     
 def registrar_usuario(usuarios,numero_socio,nombre):
-    try:
-        if numero_socio not in usuarios:
-            usuarios[numero_socio] = {"numero de socio":numero_socio, "nombre":nombre, "prestamos_activos":[]}
-            return usuarios[numero_socio]
-    except ErrorValorNumSo:
-        print("Usuario ya reguistrado")
+     try:
+          if numero_socio not in usuarios:
+               raise ErrorValorNumSo(numero_socio)
+          usuarios[numero_socio] = {"numero de socio":numero_socio, "nombre":nombre, "prestamos_activos":[]}
+          return usuarios[numero_socio]
+     except ErrorValorNumSo:
+          print("Usuario ya reguistrado")
                 
 def dar_baja_usuario (usuarios, prestamos, numero_socio):
     if numero_socio in usuarios and not usuarios[numero_socio]['prestamos_activos']:
@@ -104,11 +105,11 @@ def listar_vencidos(prestamos, fecha_actual):
 def guardar_datos(catalogo,usuarios,prestamos):
     with open ("archivo.txt", "a") as archivo:
         for item in catalogo:
-            print(catalogo, file=archivo)
+            print(catalogo[item], file=archivo)
         for item in usuarios:
-            print(usuarios, file=archivo)
+            print(usuarios[item], file=archivo)
         for item in prestamos:
-            print (prestamos, file=archivo)
+            print (item, file=archivo)
 
 
 
