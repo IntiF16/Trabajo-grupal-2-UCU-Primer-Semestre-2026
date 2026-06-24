@@ -1,6 +1,24 @@
-usuarios ={} #{numero_socio: nombre}
-prestamos ={}
-catalogo  ={}
+import datetime
+
+usuarios ={
+     "001": { "numero_socio": 1, "nombre": "Ana", 
+"prestamos_activos": []
+    }	} 
+prestamos = [{ "numero_socio": 1, "isbn": "978-1",  
+"fecha_prestamo": "02/06/2026",  
+"fecha_limite": "09/06/2026", "devuelto": False}]
+catalogo  ={
+    "978-1": {  "isbn": "978-1", 
+'titulo': 'Cien años de soledad',  
+'autor': 'García Márquez', 'genero': 'Novela', 
+'ejemplares_totales': 2, 
+'ejemplares_disponibles': 1 }, 
+'978-2': {  'isbn': '978-2', 
+'titulo': 'El túnel',  
+'autor': 'Sábato', 'genero': 'Novela', 
+'ejemplares_totales': 1, 
+'ejemplares_disponibles': 1 }
+    }
 def normalizar(text):
     text = text.lower()
     Ftext = ""
@@ -38,6 +56,17 @@ def dar_baja_usuario (usuarios, prestamos, numero_socio):
     if numero_socio in usuarios and not usuarios[numero_socio]['prestamos activos']:
         del usuarios[numero_socio]
 
+def registrar_prestamo(catalogo, usuarios, prestamos, 
+numero_socio, isbn, fecha_prestamo):
+    now = datetime.datetime.now()
+    if catalogo[isbn][ejemplares] != 0 and numero_socio in usuarios:     
+        prestamos.append({'numero_socio': numero_socio, 'isbn': isbn,  
+'fecha_prestamo': now ,  
+'fecha_limite': now + timedelta(weeks = 1) , 'devuelto': False})
+    else: raise exception("ingrese los datos correctos")
+        
+        
+        
 def guardar_datos(catalogo,usuarios,prestamos):
     with open ("archivo.txt", "a") as archivo:
         for catalogo in lista:
