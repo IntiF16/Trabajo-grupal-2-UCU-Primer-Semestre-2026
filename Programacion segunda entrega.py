@@ -58,6 +58,13 @@ def dar_baja_usuario (usuarios, prestamos, numero_socio):
     if numero_socio in usuarios and not usuarios[numero_socio]['prestamos_activos']:
         del usuarios[numero_socio]
 
+def historial_usuario(prestamos, numero_socio):
+    historial = []
+    for i in range(len(prestamos)):
+        if prestamos[i]["numero_socio"] == numero_socio:
+            historial.append(prestamos[i])
+    return historial
+
 def registrar_prestamo(catalogo, usuarios, prestamos, 
 numero_socio, isbn, fecha_prestamo):
     try:
@@ -96,11 +103,11 @@ def listar_vencidos(prestamos, fecha_actual):
     
 def guardar_datos(catalogo,usuarios,prestamos):
     with open ("archivo.txt", "a") as archivo:
-        for catalogo in lista:
+        for item in catalogo:
             print(catalogo, file=archivo)
-        for usuarios in lista:
+        for item in usuarios:
             print(usuarios, file=archivo)
-        for prestamos in lista:
+        for item in prestamos:
             print (prestamos, file=archivo)
 
 
@@ -131,9 +138,15 @@ while running == True:
                         registrar_usuario(usuarios,n_socio,nom_usuario)
                     case 2:
                         e_socio=input("ingrese numero de socio a eliminar")
-                        dar_baja_usuario (usuarios, usuarios[e_socio]['prestamos activos'], e_socio)
+                        dar_baja_usuario(usuarios, prestamos, e_socio)
                     case 3:
-                        print("d")
+                        h_socio = input("Ingrese numero de socio: ")
+                        historial = historial_usuario(prestamos, h_socio)
+                        if historial:
+                            for p in historial:
+                                print(p)
+                        else:
+                            print("El usuario no tiene préstamos registrados.")
                     case 4:
                         continue
                     case _:
