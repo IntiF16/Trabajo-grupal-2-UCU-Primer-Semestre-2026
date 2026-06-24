@@ -48,7 +48,7 @@ class ErrorValorNumSo(Exception):
     
 def registrar_usuario(usuarios,numero_socio,nombre):
      try:
-          if numero_socio not in usuarios:
+          if numero_socio in usuarios:
                raise ErrorValorNumSo(numero_socio)
           usuarios[numero_socio] = {"numero de socio":numero_socio, "nombre":nombre, "prestamos_activos":[]}
           return usuarios[numero_socio]
