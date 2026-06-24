@@ -1,3 +1,6 @@
+usuarios ={} #{numero_socio: nombre}
+prestamos ={}
+catalogo  ={}
 def normalizar(text):
     text = text.lower()
     Ftext = ""
@@ -16,6 +19,33 @@ def normalizar(text):
                 subtext[space] = "u"
         Ftext = Ftext + subtext[space]
     return Ftext
+
+class ErrorValorNumSo(Exception):
+    def __init__(self, valor):
+        self.valor = valor
+    def __str__(self):
+        return repr(self.value)
+    
+def registrar_usuario(usuarios,numero_socio,nombre):
+    try:
+        if numero_socio not in usuarios:
+            usuarios[numero_socio] = {"numero de socio":numero_socio, "nombre":nombre, "prestamos activos":[]}
+            return usuarios[numero_socio]
+    except ErrorValorNumSo:
+        print("Usuario ya reguistrado")
+                
+def dar_baja_usuario (usuarios, prestamos, numero_socio):
+    if numero_socio in usuarios and not usuarios[numero_socio]['prestamos activos']:
+        del usuarios[numero_socio]
+
+def guardar_datos(catalogo,usuarios,prestamos):
+    with open ("archivo.txt", "a") as archivo:
+        for catalogo in lista:
+            print(catalogo, file=archivo)
+        for usuarios in lista:
+            print(usuarios, file=archivo)
+        for prestamos in lista:
+            print (prestamos, file=archivo)
 
 BooksChoice = 0            
 UserChoice = 0
@@ -37,9 +67,14 @@ while running == True:
                 UserChoice = int(input("Ingrese un numero para elegir su acción "))
                 match UserChoice:
                     case 1:
-                        print('a')
+                        n_socio= input("ingrese numero de socio")
+                        nom_usuario= input("ingrese nombre de usuario")
+                        registrar_usuario(usuarios,n_socio,nom_usuario)
+                
                     case 2:
-                        print('b')
+                        e_socio=input("ingrese numero de socio a eliminar")
+                        dar_baja_usuario (usuarios, usuarios[e_socio]['prestamos activos'], e_socio)
+                        
                     case 3:
                         print('c')
                     case 4:
