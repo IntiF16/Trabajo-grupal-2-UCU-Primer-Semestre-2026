@@ -5,7 +5,8 @@ Now = datetime.datetime.now()
 usuarios ={
      "001": { "numero_socio": "001", "nombre": "Ana", 
 "prestamos_activos": ["978-1"]
-    }	} 
+    }
+} 
 prestamos = [{ "numero_socio": "001", "isbn": "978-1",  
 "fecha_prestamo": "02/06/2026",  
 "fecha_limite": "09/06/2026", "devuelto": False}]
@@ -22,11 +23,11 @@ catalogo  ={
 'ejemplares_disponibles': 1 }
     }
 def normalizar(text):
-    text = text.lower()
+    text = text.lower() #se considera solo sin mayúscula
     Ftext = ""
     subtext = list(text)
     for space in range(len(subtext)):
-        match subtext[space]:
+        match subtext[space]:#si es una vocal con tilde se lo quita
             case "á":
                 subtext[space] = "a"
             case "é":
@@ -69,38 +70,44 @@ def historial_usuario(prestamos, numero_socio):
 def registrar_prestamo(catalogo, usuarios, prestamos, 
 numero_socio, isbn, fecha_prestamo):
     try:
-        if catalogo[isbn]["ejemplares_disponibles"] != 0 and numero_socio in usuarios:     
-            prestamos.append({'numero_socio': numero_socio, 'isbn': isbn,  
-    'fecha_prestamo': fecha_prestamo.strftime("%d/%m/%Y") ,  
-    'fecha_limite': (fecha_prestamo + timedelta(weeks = 1)).strftime("%d/%m/%Y") , 'devuelto': False})
-            usuarios[numero_socio]["prestamos_activos"].append(isbn)
-            catalogo[isbn]["ejemplares_disponibles"] -= 1
-    except:
-        print("ingrese los datos correctos")
+        if catalogo[isbn]["ejemplares_disponibles"] != 0 and numero_socio in usuarios:  #si hay ejemplares disponibles y el socio existe   
+            prestamos.append({'numero_socio': numero_socio, 'isbn': isbn,
+            'fecha_prestamo': fecha_prestamo.strftime("%d/%m/%Y") ,
+            'fecha_limite': (fecha_prestamo + timedelta(weeks = 1)).strftime("%d/%m/%Y") , 'devuelto': False}) #se agrega el prestamo
+            usuarios[numero_socio]["prestamos_activos"].append(isbn) #se agrega un prestamo activo al usuario
+            catalogo[isbn]["ejemplares_disponibles"] -= 1 #se quita del catalogo el libro
+            print (prestamos) #muestro los prestamos para mostrar que funciona
+            print("ingreso registrado con exito") #avisa que todo funcionó
+        else: 
+            raise Exception #si no se cumple emite error
+    except Exception:
+        print("ingrese usuario e isbn correctos") #le digo la información que puede estar mal
 
 def registrar_devolucion(usuarios,catalogo, prestamos, numero_socio, isbn):
     try:
-       for b in range(len(prestamos)):
-            if prestamos[b]["numero_socio"] == numero_socio and prestamos[b]["isbn"] == isbn and prestamos[b]["devuelto"] == False:
-                prestamos[b]["devuelto"] = True
-                catalogo[isbn] ["ejemplares_disponibles"] += 1
-                usuarios[numero_socio]["prestamos_activos"].remove(isbn)
+       for b in range(len(prestamos)): #reviso la lista de prestamos
+            if prestamos[b]["numero_socio"] == numero_socio and prestamos[b]["isbn"] == isbn and prestamos[b]["devuelto"] == False: #chequea si existe el usuario, si existe el prestamo y si está devuelto
+                prestamos[b]["devuelto"] = True # marco como devuelto el prestamo
+                catalogo[isbn] ["ejemplares_disponibles"] += 1 #lo devuelvo al catalogo
+                usuarios[numero_socio]["prestamos_activos"].remove(isbn) #quito el prestamo de los activos del usuario
+                print (prestamos) #muestro los prestamos para que se vea efectuado
+                print("¡Devolución registrada con éxito!") #aviso que se devolvió
                 break
+            elif prestamos[b] == True:
+                print ("Este prestamo ya está devuelto") #si ya está devuelto cambia el procedimiento
     except KeyError:
-        print("Error: El número de socio o el ISBN ingresado no existen en el sistema.")
+        print("Error: El número de socio o el ISBN ingresado no existen en el sistema.") #aviso que el libro no existe en el sistema
     except ValueError:
-        print("Error: El libro no se encuentra en la lista de préstamos activos del usuario.")
-    except Exception as e:
-        print(f"Ocurrió un error inesperado: {e}")            
+        print("Error: El libro no se encuentra en la lista de préstamos activos del usuario.") #aviso que puso un libro que no está en los prestamos del usuario         
         
 def listar_vencidos(prestamos, fecha_actual):
-    vencidos = []
+    vencidos = [] #creo una lista para ver cuales prestamos están vencidos
     
     for d in prestamos:
-        fecha_objeto = datetime.datetime.strptime(d["fecha_limite"], "%d/%m/%Y")
-        if fecha_objeto < fecha_actual and d["devuelto"] == False:
-            vencidos.append(d)
-    return vencidos
+        fecha_objeto = datetime.datetime.strptime(d["fecha_limite"], "%d/%m/%Y") #Arreglo el tipo de datos para que sea operable
+        if fecha_objeto < fecha_actual and d["devuelto"] == False: #chequeo si ya pasó la fecha
+            vencidos.append(d) #lo agrego a la lista
+    return vencidos #devuelvo la lista de prestamos vencidos
     
 def guardar_datos(catalogo,usuarios,prestamos):
     with open ("archivo.txt", "a") as archivo:
@@ -187,15 +194,11 @@ while running == True:
                         Ns = input("ingresa el numero del socio")
                         Nbok = input("ingresa el isbn del libro")
                         registrar_prestamo(catalogo, usuarios, prestamos, Ns, Nbok, Now)
-                        print (prestamos)
-                        print("ingreso registrado con exito")
                     case 2:
                         print("--- Registrar Devolución ---")
                         LoanRUser = input("Ingresa el número del socio: ")
                         LoanRIsbn = input("Ingresa el ISBN del libro a devolver: ")
                         registrar_devolucion(usuarios, catalogo, prestamos, LoanRUser, LoanRIsbn)
-                        print (prestamos)
-                        print("¡Devolución registrada con éxito!")
                     case 3:
                         print("--- Listar Prestamos vencidos ---")
                         print(listar_vencidos(prestamos, Now))
